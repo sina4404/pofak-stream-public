@@ -1,0 +1,9 @@
+# Private / machine-specific
+.env
+data/
+prowlarr-config/
+downloads/
+
+# Build output
+node_modules/
+npm-debug.log*

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pofak Stream</title>
+  <meta name="description" content="Movies · Pizza · Popcorn. Search and stream movies and shows.">
+  <meta name="theme-color" content="#14121d">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="apple-touch-icon" href="img/icon-180.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preload" as="image" href="img/logo-600.webp" imagesrcset="img/logo-600.webp 600w, img/logo-1000.webp 1000w" imagesizes="(max-width: 640px) 92vw, 560px">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="home">
+  <header id="top">
+    <a id="home" class="brand" href="/" title="Pofak Stream: home">
+      <img class="hero" src="img/logo-600.webp" srcset="img/logo-600.webp 600w, img/logo-1000.webp 1000w"
+           sizes="(max-width: 640px) 92vw, 560px" width="600" height="384" alt="Pofak Stream" fetchpriority="high">
+      <img class="badge-icon" src="img/badge-96.webp" width="44" height="44" alt="Pofak Stream">
+    </a>
+    <form id="search-form" role="search">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
+        <input id="q" type="search" placeholder="Search movies or TV shows…" autocomplete="off" autofocus aria-label="Search movies or TV shows">
+        <ul id="suggestions" hidden></ul>
+      </div>
+      <button class="btn-primary">Search</button>
+    </form>
+    <p class="tagline">Start typing: the best-known titles show up first.</p>
+  </header>
+
+  <section id="player" hidden>
+    <div class="video-wrap"><video id="video" controls autoplay playsinline></video></div>
+    <div class="player-info">
+      <div class="now">
+        <strong id="now-title"></strong>
+        <button id="close-player" class="btn-ghost" type="button">✕ Close</button>
+      </div>
+      <div id="episodes" class="episodes" hidden>
+        <select id="episode-select" aria-label="Episode"></select>
+        <button id="next-ep" class="btn-primary" type="button">Next ▶</button>
+      </div>
+      <div class="bar"><div id="bar-fill"></div></div>
+      <div id="stats"></div>
+      <div id="warn" hidden>
+        This file format may not play in every browser. Open it in VLC:
+        <code id="vlc-url"></code> <button id="copy-url" class="btn-ghost" type="button">Copy link</button>
+      </div>
+      <details id="subs">
+        <summary>💬 Subtitles <span id="sub-current"></span></summary>
+        <div class="sub-controls">
+          <select id="sub-lang" aria-label="Subtitle language">
+            <option value="en">English</option>
+            <option value="fa">فارسی (Persian)</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="tr">Türkçe</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="pt-br">Português (BR)</option>
+            <option value="ru">Русский</option>
+            <option value="zh-cn">中文</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="hi">हिन्दी</option>
+            <option value="nl">Nederlands</option>
+          </select>
+          <button id="sub-search" class="btn-ghost" type="button">Find subtitles</button>
+          <label class="btn-ghost file-btn">Load .srt file<input id="sub-file" type="file" accept=".srt,.vtt" hidden></label>
+          <button id="sub-off" class="btn-ghost" type="button">Off</button>
+        </div>
+        <div class="sub-controls">
+          <label class="auto"><input id="sub-auto" type="checkbox" checked> Load best match automatically</label>
+          <span class="timing">Timing:
+            <button id="sub-earlier" class="btn-ghost" type="button">−0.5s</button>
+            <span id="sub-offset">0.0s</span>
+            <button id="sub-later" class="btn-ghost" type="button">+0.5s</button>
+          </span>
+        </div>
+        <p id="sub-message"></p>
+        <ul id="sub-list"></ul>
+      </details>
+    </div>
+  </section>
+
+  <p id="message" role="status"></p>
+  <main id="results"></main>
+
+  <footer>
+    <details>
+      <summary>Have a magnet link?</summary>
+      <form id="magnet-form">
+        <input id="magnet" placeholder="magnet:?xt=urn:btih:…  or  https://…/file.torrent" aria-label="Magnet link or torrent URL">
+        <button class="btn-primary">Play</button>
+      </form>
+    </details>
+    <span>Movies · Pizza · Popcorn · <a id="logout" href="/login">Log out</a></span>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

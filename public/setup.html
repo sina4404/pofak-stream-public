@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Welcome · Pofak Stream</title>
+  <meta name="theme-color" content="#14121d">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="home login-page">
+  <header>
+    <img class="hero" src="img/logo-600.webp" srcset="img/logo-600.webp 600w, img/logo-1000.webp 1000w"
+         sizes="(max-width: 640px) 92vw, 560px" width="600" height="384" alt="Pofak Stream" fetchpriority="high">
+    <form id="setup-form" class="login-card">
+      <div>
+        <strong>Welcome! Create your account</strong>
+        <p class="hint">This is the first start. The account you create here can log in from anywhere.
+          Add more people later with <code>node src/user.js add</code> (see README).</p>
+      </div>
+      <label>Username
+        <input id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
+      </label>
+      <label>Password (at least 8 characters)
+        <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+      </label>
+      <label>Repeat password
+        <input id="password2" name="password2" type="password" autocomplete="new-password" minlength="8" required>
+      </label>
+      <p id="login-error" role="alert"></p>
+      <button class="btn-primary" type="submit">Create account</button>
+    </form>
+  </header>
+  <script src="setup.js" defer></script>
+</body>
+</html>

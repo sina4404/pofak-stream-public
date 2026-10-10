@@ -1,0 +1,24 @@
+{
+  "name": "pofak-stream",
+  "version": "1.0.0",
+  "description": "Pofak Stream: search movies & shows, stream torrents while they download, with subtitles and login",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "compression": "1.8.1",
+    "express": "^4.21.2",
+    "fast-xml-parser": "^4.5.1",
+    "parse-torrent": "11.0.24",
+    "webtorrent": "2.8.5"
+  },
+  "overrides": {
+    "uint8-util": "2.2.6"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,77 @@
+# Pofak Stream: search, stream torrents while they download, subtitles, login.
+#
+#   docker compose up -d                              start (first run builds the app)
+#   open http://<this-computer's-ip>:8080             first visit: create your account
+#
+# Personal settings (API keys, tunnel token) go in a ".env" file next to this one;
+# copy .env.example to .env. Nothing in this file needs editing.
+
+services:
+  mintstream:
+    build: .
+    image: pofak-stream:latest
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:8080"   # web site + video stream
+      - "6881:6881/tcp"            # torrent peers
+      - "6881:6881/udp"            # torrent peers (uTP)
+      - "6882:6882/udp"            # DHT
+    volumes:
+      - ./downloads:/downloads             # temporary video files (auto-cleaned)
+      - ./data:/data                       # accounts + login key (keep this folder!)
+      - ./prowlarr-config:/prowlarr-config:ro   # lets the app read Prowlarr's API key
+    environment:
+      # Downloads: delete a video's files once nobody watched it for IDLE_MINUTES
+      - KEEP_DOWNLOADS=${KEEP_DOWNLOADS:-false}
+      - IDLE_MINUTES=${IDLE_MINUTES:-30}
+      - MAX_ACTIVE_TORRENTS=${MAX_ACTIVE_TORRENTS:-3}
+      - MIN_FREE_GB=${MIN_FREE_GB:-2}
+      # Torrent sites you add in Prowlarr (http://<ip>:9696)
+      - PROWLARR_URL=http://prowlarr:9696
+      # Online subtitles: free key from https://www.opensubtitles.com/consumers
+      - OPENSUBTITLES_API_KEY=${OPENSUBTITLES_API_KEY:-}
+      - OPENSUBTITLES_USERNAME=${OPENSUBTITLES_USERNAME:-}
+      - OPENSUBTITLES_PASSWORD=${OPENSUBTITLES_PASSWORD:-}
+      # Optional extra Jackett/Torznab indexer
+      - TORZNAB_URL=${TORZNAB_URL:-}
+      - TORZNAB_APIKEY=${TORZNAB_APIKEY:-}
+    depends_on:
+      - prowlarr
+
+  # Torrent-site manager: open http://<ip>:9696 to choose which sites to search.
+  # Not reachable through the internet tunnel.
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    restart: unless-stopped
+    ports:
+      - "9696:9696"
+    volumes:
+      - ./prowlarr-config:/config
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-Etc/UTC}
+
+  # ---------- Sharing over the internet (Cloudflare Tunnel) ----------
+  # Temporary public https address (no account; changes on every restart):
+  #   docker compose --profile quick-tunnel up -d
+  #   docker compose logs quick-tunnel | grep trycloudflare
+  quick-tunnel:
+    image: cloudflare/cloudflared:latest
+    profiles: ["quick-tunnel"]
+    command: tunnel --no-autoupdate --url http://mintstream:8080
+    restart: unless-stopped
+    depends_on:
+      - mintstream
+
+  # Permanent address on your own domain: set TUNNEL_TOKEN in .env (see README), then:
+  #   docker compose --profile tunnel up -d
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    profiles: ["tunnel"]
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN:-}
+    restart: unless-stopped
+    depends_on:
+      - mintstream

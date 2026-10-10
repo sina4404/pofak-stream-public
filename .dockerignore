@@ -1,0 +1,7 @@
+node_modules
+downloads
+data
+prowlarr-config
+.env
+.git
+npm-debug.log
